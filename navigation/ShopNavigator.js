@@ -15,6 +15,7 @@ import { createDrawerNavigator,DrawerItems } from 'react-navigation-drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
 import { logOut } from '../store/actions/auth';
+import TableScreen from '../screens/TableScreen';
 
 const ProductsNavigator = createStackNavigator({
     products: {
@@ -106,6 +107,30 @@ const UserProductStackNavigator = createStackNavigator({
     }
 })
 
+const TableStackNavigator = createStackNavigator({
+    Table:TableScreen
+}, {
+    navigationOptions: {
+        drawerIcon: drawerConfig => <Ionicons 
+                                        name={Platform.OS === 'android' ? 'md-archive' : 'ios-archive'}
+                                        size={21}
+                                        color={drawerConfig.tintColor}
+                                    />
+    },
+    defaultNavigationOptions: {
+        headerStyle: {
+            backgroundColor: Platform.OS === 'android' ? Colors.primary : 'white'
+        },
+        headerTitleStyle: {
+            fontFamily:'open-sans-bold'
+        },
+        headerBackTitleStyle: {
+            fontFamily:'open-sans'
+        },
+        headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary
+    }
+});
+
 const MainDrawerNavigator = createDrawerNavigator({
     Products:{
         screen: ProductsNavigator,
@@ -125,6 +150,12 @@ const MainDrawerNavigator = createDrawerNavigator({
             drawerLabel:'User Products'
         }
     },
+    TableExample: {
+        screen: TableStackNavigator,
+        navigationOptions: {
+            drawerLabel:'Table Example'
+        }
+    }
 }, {
     contentOptions: {
         activeTintColor: Colors.accentColor,
