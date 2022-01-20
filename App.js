@@ -1,12 +1,47 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { createStore, combineReducers, applyMiddleware} from 'redux';
+import { Provider } from 'react-redux';
+import ShopNavigator from './navigation/ShopNavigator';
+import NavigationContainer from './navigation/NavigationContainer';
+import ReduxThunk from 'redux-thunk';
+
+import {useState} from 'react';
+import AppLoading from 'expo-app-loading';
+import * as Font from 'expo-font';
+
+import productsReducer from './store/reducers/products';
+import cartReducer from './store/reducers/cart';
+import orderReducer from './store/reducers/orders';
+import authReducer from './store/reducers/auth';
+
+const rootReducer = combineReducers({
+  products: productsReducer,
+  cart: cartReducer,
+  orders: orderReducer,
+  auth:authReducer
+})
+
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+
+const fetchFonts = () => {
+  return Font.loadAsync({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+  });
+}
 
 export default function App() {
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  if (!fontLoaded) {
+    return (
+      <AppLoading startAsync={fetchFonts} onFinish={() => setFontLoaded(true)} onError={(err) => {console.log(err)}}/>
+    ); }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <NavigationContainer />
+    </Provider>
   );
 }
 
